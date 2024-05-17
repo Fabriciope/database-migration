@@ -1,0 +1,4 @@
+ALTER TABLE `users` 
+    ADD COLUMN age TINYINT UNSIGNED NOT NULL 
+    AFTER email;
+
