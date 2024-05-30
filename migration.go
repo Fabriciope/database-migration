@@ -16,10 +16,10 @@ type Exec interface {
 	Exec(string, ...any) (sql.Result, error)
 }
 
+// TODO: lower case
+// TEST: testar novamente e comitar
 type Migration struct {
 	dbConnection   Exec
-	FileName       string
-	Path           string
 	Name           string
 	upSqlCommand   string
 	downSqlCommand string
@@ -64,7 +64,7 @@ func (migration *Migration) Down() error {
 
 func (migration *Migration) newUpMigrationError(targedErr error) error {
 	return &MigrationError{
-		FileName:   migration.FileName,
+		FileName:   migration.Name + upSuffix,
 		SqlCommand: migration.upSqlCommand,
 		Err:        targedErr,
 	}
@@ -72,7 +72,7 @@ func (migration *Migration) newUpMigrationError(targedErr error) error {
 
 func (migration *Migration) newDownMigrationError(targedErr error) error {
 	return &MigrationError{
-		FileName:   migration.FileName,
+		FileName:   migration.Name + downSuffix,
 		SqlCommand: migration.downSqlCommand,
 		Err:        targedErr,
 	}

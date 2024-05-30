@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-const migrationsPath = "./fake_migrations/"
+const migrationsPath = "./fake_migrations_for_migration_test/"
 
 func missingMigationFileFailure(t *testing.T, migrationPath string, err error) {
 }
@@ -55,8 +55,6 @@ func Test_Should_Run_Migration(t *testing.T) {
 
 	migration := &Migration{
 		dbConnection: execMock,
-		FileName:     migrationFile,
-		Path:         migrationPath,
 		Name:         migrationName,
 		executed:     false,
 		upSqlCommand: command,
@@ -84,8 +82,6 @@ func Test_Up_Migration_When_File_Is_Empty(t *testing.T) {
 	migration := &Migration{
 		dbConnection: execMock,
 		Name:         migrationName,
-		FileName:     migrationFile,
-		Path:         migrationPath,
 		executed:     false,
 		upSqlCommand: command,
 	}
@@ -105,17 +101,13 @@ func Test_Up_Migration_When_File_Is_Empty(t *testing.T) {
 		t.Errorf("expected error *%s* but got: %s", emptyUpMigrationErr.Error(), unwrappedErr.Error())
 	}
 
-	if migrationErr.FileName != migrationFile {
-		t.Errorf("exepected file %s but got %s", migrationName, migrationErr.FileName)
-	}
-
 	if migrationErr.SqlCommand != command {
 		t.Errorf("expeced command %s but got %s", command, migrationErr.SqlCommand)
 	}
 
-    if migration.executed {
-        t.Error("executed field must be false")
-    }
+	if migration.executed {
+		t.Error("executed field must be false")
+	}
 }
 
 func Test_Up_Migration_When_Up_Command_Already_Run(t *testing.T) {
@@ -134,8 +126,6 @@ func Test_Up_Migration_When_Up_Command_Already_Run(t *testing.T) {
 	migration := &Migration{
 		dbConnection: execMock,
 		Name:         migrationName,
-		FileName:     migrationFile,
-		Path:         migrationPath,
 		executed:     true,
 		upSqlCommand: command,
 	}
@@ -163,9 +153,9 @@ func Test_Up_Migration_When_Up_Command_Already_Run(t *testing.T) {
 		t.Errorf("expeced command %s but got %s", command, migrationErr.SqlCommand)
 	}
 
-    if !migration.executed {
-        t.Error("executed field must be true")
-    }
+	if !migration.executed {
+		t.Error("executed field must be true")
+	}
 }
 
 func Test_Up_Migration_When_Database_Return_An_Error(t *testing.T) {
@@ -185,8 +175,6 @@ func Test_Up_Migration_When_Database_Return_An_Error(t *testing.T) {
 
 	migration := &Migration{
 		dbConnection: execMock,
-		FileName:     migrationFile,
-		Path:         migrationPath,
 		Name:         migrationName,
 		executed:     false,
 		upSqlCommand: command,
@@ -207,17 +195,13 @@ func Test_Up_Migration_When_Database_Return_An_Error(t *testing.T) {
 		t.Errorf("expected error *%s* but got: %s", fakeErrorFromDatabase.Error(), unwrappedErr.Error())
 	}
 
-	if migrationErr.FileName != migrationFile {
-		t.Errorf("exepected file %s but got %s", migrationName, migrationErr.FileName)
-	}
-
 	if migrationErr.SqlCommand != command {
 		t.Errorf("expeced command %s but got %s", command, migrationErr.SqlCommand)
 	}
-    
-    if migration.executed {
-        t.Error("executed field must be false")
-    }
+
+	if migration.executed {
+		t.Error("executed field must be false")
+	}
 }
 
 func Test_Down_Migration_When_Up_Command_Has_Not_Run_Yet(t *testing.T) {
@@ -236,8 +220,6 @@ func Test_Down_Migration_When_Up_Command_Has_Not_Run_Yet(t *testing.T) {
 	migration := &Migration{
 		dbConnection:   execMock,
 		Name:           migrationName,
-		FileName:       migrationFile,
-		Path:           migrationPath,
 		executed:       false,
 		downSqlCommand: command,
 	}
@@ -257,15 +239,11 @@ func Test_Down_Migration_When_Up_Command_Has_Not_Run_Yet(t *testing.T) {
 		t.Errorf("expected error *%s* but got: %s", cannotDownMigrationErr.Error(), unwrappedErr.Error())
 	}
 
-	if migrationErr.FileName != migrationFile {
-		t.Errorf("exepected file %s but got %s", migrationName, migrationErr.FileName)
-	}
-
 	if migrationErr.SqlCommand != command {
 		t.Errorf("expeced command %s but got %s", command, migrationErr.SqlCommand)
 	}
 
-    if migration.executed {
-        t.Error("executed field must be false")
-    }
+	if migration.executed {
+		t.Error("executed field must be false")
+	}
 }
