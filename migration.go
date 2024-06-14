@@ -16,8 +16,6 @@ type Exec interface {
 	Exec(string, ...any) (sql.Result, error)
 }
 
-// TODO: lower case
-// TEST: testar novamente e comitar
 type Migration struct {
 	dbConnection   Exec
 	Name           string
@@ -32,7 +30,7 @@ func (migration *Migration) Up() error {
 	}
 
 	if migration.executed {
-		return migration.newUpMigrationError(cannotUpMigrationErr)
+		return migration.newUpMigrationError(MigrationAlreadyExecutedErr)
 	}
 
 	if _, err := migration.dbConnection.Exec(migration.upSqlCommand); err != nil {
@@ -50,7 +48,7 @@ func (migration *Migration) Down() error {
 	}
 
 	if !migration.executed {
-		return migration.newDownMigrationError(cannotDownMigrationErr)
+		return migration.newDownMigrationError(MigrationNotExecutedYetErr)
 	}
 
 	if _, err := migration.dbConnection.Exec(migration.downSqlCommand); err != nil {

@@ -6,11 +6,10 @@ import (
 )
 
 var (
-    // TODO: trocar para executed
-	emptyUpMigrationErr    = errors.New("empty up migration")
-	emptyDownMigrationErr  = errors.New("empty down migration")
-	cannotUpMigrationErr   = errors.New("this migration is already up")
-	cannotDownMigrationErr = errors.New("this migration has not run yet")
+	emptyUpMigrationErr      = errors.New("empty up migration")
+	emptyDownMigrationErr    = errors.New("empty down migration")
+	MigrationAlreadyExecutedErr = errors.New("this migration is already up")
+	MigrationNotExecutedYetErr  = errors.New("this migration has not run yet")
 )
 
 type MigrationError struct {

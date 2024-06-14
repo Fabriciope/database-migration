@@ -2,20 +2,14 @@
 package main
 
 import (
-	"database/sql"
 	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
-
-	"github.com/stretchr/testify/mock"
 )
 
-const migrationsPath = "./fake_migrations_for_migration_test/"
-
-func missingMigationFileFailure(t *testing.T, migrationPath string, err error) {
-}
+const migrationsPath = "./fake_migrations1_for_tests/"
 
 func getCommandFrom(t *testing.T, file string) string {
 	content, err := os.ReadFile(file)
@@ -27,18 +21,6 @@ func getCommandFrom(t *testing.T, file string) string {
 
 	return string(content)
 }
-
-type execMock struct {
-	mock.Mock
-}
-
-func (mock *execMock) Exec(query string, _ ...any) (sql.Result, error) {
-	args := mock.Called(query)
-	return nil, args.Error(0)
-}
-
-// TEST: testar o campo executed depois de rodar o down ou up
-// TEST: testar com o coverage
 
 func Test_Should_Run_Migration(t *testing.T) {
 	var (
@@ -63,6 +45,10 @@ func Test_Should_Run_Migration(t *testing.T) {
 	err := migration.Up()
 	if err != nil {
 		t.Errorf("exepected nil but got an error: %s", err.Error())
+	}
+
+	if !migration.executed {
+		t.Error("executed field must be true")
 	}
 }
 
@@ -141,8 +127,8 @@ func Test_Up_Migration_When_Up_Command_Already_Run(t *testing.T) {
 	}
 
 	unwrappedErr := errors.Unwrap(err)
-	if unwrappedErr.Error() != cannotUpMigrationErr.Error() {
-		t.Errorf("expected error *%s* but got: %s", cannotUpMigrationErr.Error(), unwrappedErr.Error())
+	if unwrappedErr.Error() != MigrationAlreadyExecutedErr.Error() {
+		t.Errorf("expected error *%s* but got: %s", MigrationAlreadyExecutedErr.Error(), unwrappedErr.Error())
 	}
 
 	if migrationErr.FileName != migrationFile {
@@ -235,8 +221,8 @@ func Test_Down_Migration_When_Up_Command_Has_Not_Run_Yet(t *testing.T) {
 	}
 
 	unwrappedErr := errors.Unwrap(err)
-	if unwrappedErr.Error() != cannotDownMigrationErr.Error() {
-		t.Errorf("expected error *%s* but got: %s", cannotDownMigrationErr.Error(), unwrappedErr.Error())
+	if unwrappedErr.Error() != MigrationNotExecutedYetErr.Error() {
+		t.Errorf("expected error *%s* but got: %s", MigrationNotExecutedYetErr.Error(), unwrappedErr.Error())
 	}
 
 	if migrationErr.SqlCommand != command {
