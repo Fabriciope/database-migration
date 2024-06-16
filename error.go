@@ -41,8 +41,8 @@ func (err *MigratorError) Unwrap() error {
 
 var (
 	// TODO: upercase
-	emptyUpMigrationErr         error = newError("empty up migration")
-	emptyDownMigrationErr       error = newError("empty down migration")
+	EmptyUpMigrationErr         error = newError("empty up migration")
+	EmptyDownMigrationErr       error = newError("empty down migration")
 	MigrationAlreadyExecutedErr error = newError("this migration is already up")
 	MigrationNotExecutedYetErr  error = newError("this migration has not run yet")
 )

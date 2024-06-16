@@ -62,7 +62,7 @@ func Test_Up_Migration_When_File_Is_Empty(t *testing.T) {
 	command := getCommandFrom(t, migrationPath)
 
 	execMock := &execMock{}
-	execMock.On("Exec", command).Return(emptyUpMigrationErr)
+	execMock.On("Exec", command).Return(EmptyUpMigrationErr)
 	defer execMock.AssertNumberOfCalls(t, "Exec", 0)
 
 	migration := &Migration{
@@ -83,8 +83,8 @@ func Test_Up_Migration_When_File_Is_Empty(t *testing.T) {
 	}
 
 	unwrappedErr := errors.Unwrap(err)
-	if unwrappedErr.Error() != emptyUpMigrationErr.Error() {
-		t.Errorf("expected error *%s* but got: %s", emptyUpMigrationErr.Error(), unwrappedErr.Error())
+	if unwrappedErr.Error() != EmptyUpMigrationErr.Error() {
+		t.Errorf("expected error *%s* but got: %s", EmptyUpMigrationErr.Error(), unwrappedErr.Error())
 	}
 
 	if migrationErr.SqlCommand != command {

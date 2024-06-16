@@ -26,7 +26,7 @@ type Migration struct {
 
 func (migration *Migration) Up() error {
 	if migration.upSqlCommand == "" {
-		return migration.newUpMigrationError(emptyUpMigrationErr)
+		return migration.newUpMigrationError(EmptyUpMigrationErr)
 	}
 
 	if migration.executed {
@@ -44,7 +44,7 @@ func (migration *Migration) Up() error {
 
 func (migration *Migration) Down() error {
 	if migration.downSqlCommand == "" {
-		return migration.newDownMigrationError(emptyDownMigrationErr)
+		return migration.newDownMigrationError(EmptyDownMigrationErr)
 	}
 
 	if !migration.executed {
